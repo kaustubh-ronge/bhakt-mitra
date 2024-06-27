@@ -140,36 +140,29 @@ function getURL() { window.location.href; } var protocol = location.protocol; $.
         }
     }
 
-    // Assuming you have jQuery available, include it in your project if not already done
 
-  // Listen for form submission
-  $('#request').submit(function(event) {
-      // Prevent default form submission
+    document.getElementById('request').addEventListener('submit', async (event) => {
       event.preventDefault();
-
-      // Gather form data
-      var formData = {
-          name: $('input[name="Name"]').val(),
-          phoneNumber: $('input[name="Phone Number"]').val(),
-          email: $('input[name="Email"]').val(),
-          subject: $('.custom-select').val(),
-          message: $('textarea[name="Message"]').val()
-      };
-
-      // You can add validation here before sending data to the server
-
-      // Send data to the server using AJAX
-      $.ajax({
-          type: 'POST',
-          url: 'https://fanciful-gaufre-39c193.netlify.app/submit', // Replace with your server endpoint
-          data: formData,
-          success: function(response) {
-              console.log('Form data submitted successfully');
-              // Optionally, display a success message or redirect to another page
+    
+      const formData = new FormData(event.target);
+      const data = Object.fromEntries(formData.entries());
+    
+      try {
+        const response = await fetch('https://bhakt-mitra.vercel.app/submit', { // Vercel URL used here
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
           },
-          error: function(error) {
-              console.error('Error submitting form data:', error);
-              // Handle error scenarios, such as displaying an error message
-          }
-      });
-  });
+          body: JSON.stringify(data)
+        });
+    
+        if (response.ok) {
+          alert('Form submitted successfully!');
+        } else {
+          alert('Error submitting form');
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Error submitting form');
+      }
+    });
