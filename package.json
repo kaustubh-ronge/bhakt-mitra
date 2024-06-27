@@ -15,6 +15,7 @@
     "express": "^4.19.2",
     "html5-qrcode": "^2.3.8",
     "nodemailer": "^6.9.14",
+    "qr-image": "^3.2.0",
     "qrcode": "^1.5.3"
   }
 }
