@@ -1,6 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
-    "use strict";
-  
+
     console.log("Document ready function executed");
 
 
@@ -143,33 +141,43 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   
     /* Form submit */
-    var form = document.getElementById('request');
-    if (form) {
-        form.addEventListener('submit', async function(event) {
+    
+  
+        console.log("Document ready function executed");
+      
+        // Form submit handler
+        var form = document.getElementById('request');
+        if (form) {
+          form.addEventListener('submit', async function(event) {
             event.preventDefault();
-  
+      
+            // Collect form data
             const formData = new FormData(event.target);
-            const data = Object.fromEntries(formData.entries());
-  
+            const data = {};
+            formData.forEach((value, key) => {
+              data[key] = value;
+            });
+      
             try {
-                const response = await fetch('https://your-server-url.com/submit', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-  
-                if (response.ok) {
-                    alert('Form submitted successfully!');
-                } else {
-                    alert('Error submitting form');
-                }
+              // Send form data to server
+              const response = await fetch('https://bhakt-mitra.vercel.app/submit', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+              });
+      
+              if (response.ok) {
+                alert('Form submitted successfully!');
+              } else {
+                throw new Error('Error submitting form');
+              }
             } catch (error) {
-                console.error(error);
-                alert('Error submitting form');
+              console.error(error);
+              alert('Error submitting form');
             }
-        });
-    }
-  });
-  
+          });
+        }
+    
+      
