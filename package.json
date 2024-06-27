@@ -4,7 +4,7 @@
   "description": "I will be complete soon. t",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "npm start"
   },
   "keywords": [],
   "author": "",
