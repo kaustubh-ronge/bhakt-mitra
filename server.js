@@ -1,68 +1,64 @@
+// Load environment variables from .env file
+require('dotenv').config();
+
 const express = require('express');
 const bodyParser = require('body-parser');
-const path = require('path');
 const nodemailer = require('nodemailer');
-const dotenv = require('dotenv');
-
-dotenv.config(); // Load environment variables from .env file
+const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middleware
-app.use(bodyParser.urlencoded({ extended: true }));
+// Middleware to parse JSON bodies
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// Route to serve your HTML file (assuming it's named index.html)
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
+// Serve static files from the 'bhaktmitra' directory
+app.use(express.static(path.join(__dirname, 'bhaktmitra')));
 
-// Route to handle form submissions
+// Route to handle form submission
 app.post('/submit', (req, res) => {
     const { name, phoneNumber, email, subject, message } = req.body;
 
-    // Setup nodemailer transporter
+    // Example of using nodemailer to send an email
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS
+            user: process.env.EMAIL,
+            pass: process.env.PASSWORD
         }
     });
 
-    // Email content
     const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: process.env.CREATOR_EMAIL,
-        subject: `New Contact Form Submission - ${subject}`,
+        from: process.env.EMAIL,
+        to: process.env.EMAIL, // Replace with your own email or process.env.EMAIL for testing
+        subject: 'New Form Submission',
         text: `
-        Name: ${name}
-        Phone Number: ${phoneNumber}
-        Email: ${email}
-        Message: ${message}
+            Name: ${name}
+            Phone Number: ${phoneNumber}
+            Email: ${email}
+            Subject: ${subject}
+            Message: ${message}
         `
     };
 
-    // Send email
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-            console.log(error);
-            res.status(500).send('Error sending email');
+            console.log('Error sending email:', error);
+            res.status(500).send('Failed to submit form');
         } else {
-            console.log('Email sent: ' + info.response);
-            res.send('Email sent successfully');
+            console.log('Email sent:', info.response);
+            res.status(200).send('Form submitted successfully');
         }
     });
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
+// Default route to serve index.html
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'bhaktmitra-master', 'index.html'));
 });
 
-// Start the server
+// Start server
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
